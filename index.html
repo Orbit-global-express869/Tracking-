@@ -3,29 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>OGE Private Diplomatic Portal</title>
+  <title>Orbit Global Express - Tracking</title>
   <style>
     :root { --primary: #004aad; --bg-light: #f4f7f9; --text-dark: #2c3e50; }
     body { font-family: 'Segoe UI', sans-serif; background: var(--bg-light); color: var(--text-dark); margin:0; }
-    nav { background: var(--primary); padding: 1rem; text-align: center; color: white; font-weight: bold; }
-    .container { max-width: 600px; margin: 40px auto; padding: 25px; background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-    h2 { text-align: center; color: var(--primary); }
+    nav { background: var(--primary); padding: 1rem; text-align: center; }
+    nav a { color: white; text-decoration: none; font-weight: bold; font-size: 1.2rem; }
+    .container { max-width: 600px; margin: 40px auto; padding: 25px; background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-top: 4px solid var(--primary); }
+    h2 { text-align: center; color: var(--primary); margin-bottom: 20px; }
     input { width: 100%; padding: 15px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-    button { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-    .status-alert { background: #fff3cd; color: #856404; padding: 15px; border-radius: 10px; margin: 20px 0; border: 1px solid #ffeeba; font-weight: bold; text-align: center; }
-    .progress-bar { height: 12px; background: #eee; border-radius: 6px; margin: 25px 0; overflow: hidden; }
-    .progress-fill { height: 100%; width: 0%; transition: 1.5s ease; }
+    button { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+    .status-alert { background: #fff3cd; color: #856404; padding: 15px; border-radius: 10px; margin: 20px 0; border: 1px solid #ffeeba; font-weight: bold; text-align: center; line-height: 1.4; }
     .hidden { display: none; }
-    footer { padding: 30px; text-align: center; font-size: 11px; color: #999; }
+    .progress-bar { height: 12px; background: #eee; border-radius: 6px; margin: 25px 0; overflow: hidden; }
+    .progress-fill { height: 100%; background: #28a745; width: 0%; transition: 1.5s ease; }
+    #details { line-height: 1.8; margin-top: 20px; }
   </style>
 </head>
 <body>
-  <nav>ORBIT GLOBAL EXPRESS | SECURE DISPATCH</nav>
+  <nav><a href="#">ORBIT GLOBAL EXPRESS</a></nav>
   <div class="container">
-    <h2>Secure Identity Verification</h2>
-    <p style="text-align:center; font-size: 13px;">Enter your unique Diplomatic ID to track movement.</p>
-    <input type="text" id="trackInput" placeholder="Enter ID Number">
-    <button onclick="track()">Verify Status</button>
+    <h2>Shipment Tracking</h2>
+    <input type="text" id="trackInput" placeholder="Enter Tracking Number">
+    <button onclick="track()">Locate Package</button>
 
     <div id="result" class="hidden">
       <div id="holdAlert" class="status-alert hidden"></div>
@@ -33,11 +33,6 @@
       <div id="details"></div>
     </div>
   </div>
-
-  <footer>
-    <p>This is a private logistics simulation tool for Orbit Global Express authorized personnel.</p>
-    <p>© 2026 Diplomatic Courier Service Partner. All rights reserved.</p>
-  </footer>
 
   <script>
     function track() {
@@ -50,19 +45,21 @@
       if (shipments[id]) {
         const s = shipments[id];
         resDiv.classList.remove('hidden');
+
         if (s.onHold) {
-          alertDiv.innerHTML = "⚠️ STATUS: PENDING - " + s.holdReason;
+          alertDiv.innerHTML = "⚠️ SHIPMENT STATUS: PENDING<br><span style='font-size: 0.9em; font-weight: normal;'>" + s.holdReason + "</span>";
           alertDiv.classList.remove('hidden');
-          fill.style.width = "40%"; 
-          fill.style.background = "#d9534f"; 
+          fill.style.width = "45%"; 
+          fill.style.background = "#d9534f"; // Turns Red for Pending
         } else {
           alertDiv.classList.add('hidden');
-          fill.style.width = "80%"; 
-          fill.style.background = "#28a745"; 
+          fill.style.width = "85%"; 
+          fill.style.background = "#28a745"; // Green for Active
         }
-        document.getElementById('details').innerHTML = `<strong>Recipient:</strong> ${s.name}<br><strong>Log:</strong><br>${s.history.replace(/\n/g, "<br>")}`;
+        
+        document.getElementById('details').innerHTML = `<strong>Recipient:</strong> ${s.name}<br><strong>Manifest Details:</strong><br>${s.history.replace(/\n/g, "<br>")}`;
       } else {
-        alert("Verification Failed: ID not found.");
+        alert("Tracking ID not found. Please verify the number.");
       }
     }
   </script>
