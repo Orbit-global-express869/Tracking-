@@ -7,72 +7,67 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --primary: #003366; --secondary: #004080; --accent: #ffcc00; --text: #333; --light: #f4f7f6; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--light); color: var(--text); margin: 0; padding: 20px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--light); color: var(--text-dark); margin: 0; padding: 20px; }
         .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-top: 5px solid var(--primary); }
         .header { text-align: center; margin-bottom: 30px; }
         .header i { font-size: 50px; color: var(--primary); margin-bottom: 10px; }
         h1 { color: var(--primary); margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 1px; }
         .staff-portal { background: #fff; padding: 20px; border: 2px dashed var(--primary); border-radius: 10px; }
         label { display: block; margin: 10px 0 5px; font-weight: bold; font-size: 14px; color: var(--primary); }
-        input, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 14px; margin-bottom: 10px; }
+        input, textarea, select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 14px; margin-bottom: 10px; }
         button { width: 100%; padding: 15px; background-color: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 16px; margin-top: 10px; }
         button:hover { background-color: var(--secondary); }
-        .note { font-size: 12px; color: #666; margin-top: 15px; background: #eef2f7; padding: 10px; border-radius: 5px; }
     </style>
 </head>
 <body>
-
 <div class="container">
-    <div class="header">
-        <i class="fas fa-user-shield"></i>
-        <h1>STAFF MANAGEMENT</h1>
-        <p>Orbit Global Express | Diplomatic Cargo</p>
-    </div>
-
+    <div class="header"><i class="fas fa-user-shield"></i><h1>STAFF MANAGEMENT</h1></div>
     <div class="staff-portal">
-        <label>Tracking ID (e.g., OGE-12345)</label>
-        <input type="text" id="newTrackingId" placeholder="Create Unique ID">
-
+        <label>Tracking ID</label>
+        <input type="text" id="newTrackingId" placeholder="OGE-12345">
+        
         <label>Recipient Name</label>
-        <input type="text" id="recipientName" placeholder="Full Name">
+        <input type="text" id="recipientName">
+        
+        <label style="color: #d9534f;">⚠️ SHIPMENT STATUS (Hold/Pending)</label>
+        <select id="onHold">
+            <option value="false">Active (Moving)</option>
+            <option value="true">On Hold (Stopped)</option>
+        </select>
 
-        <label>Recipient Phone (Avoid 'undefined')</label>
-        <input type="text" id="recipientPhone" placeholder="+1 (XXX) XXX-XXXX">
+        <label>Reason for Hold (Visible to Customer)</label>
+        <textarea id="holdReason" placeholder="e.g. Awaiting Insurance Payment..."></textarea>
 
-        <label>Recipient Email</label>
-        <input type="text" id="recipientEmail" placeholder="email@address.com">
+        <label>Route Milestones (Location - Hours - Emoji)</label>
+        <textarea id="routeHistory" rows="4"></textarea>
 
-        <label>Current Status</label>
-        <input type="text" id="shipmentStatus" placeholder="e.g., DIPLOMATIC TRANSIT">
-
-        <label>Route Milestones (Format: Location - Hours - Emoji)</label>
-        <textarea id="routeHistory" rows="5" placeholder="London HQ - 0 - 🏢&#10;Customs - 12 - 🛂&#10;Transit - 24 - ✈️"></textarea>
-
-        <button onclick="createManifest()">🚀 CREATE/UPDATE MANIFEST</button>
-    </div>
-
-    <div class="note">
-        <strong>MANAGEMENT TIP:</strong> To use professional icons, always include the emoji in the Route Milestones box. Data saved here will be visible on your main tracking page.
+        <button onclick="createManifest()">🚀 SAVE MANIFEST</button>
     </div>
 </div>
 
 <script>
     function createManifest() {
-        const id = document.getElementById('newTrackingId').value.trim();
-        if (!id) return alert("Please enter a Tracking ID");
+        const id = document.getElementById('newTrackingId').value.trim().toUpperCase();
+        if (!id) return alert("Enter Tracking ID");
 
+        // Calculate a 'frozen' time if putting on hold now
+        const isHold = document.getElementById('onHold').value === "true";
+        
         const manifest = {
             name: document.getElementById('recipientName').value,
-            phone: document.getElementById('recipientPhone').value || "In Review",
-            email: document.getElementById('recipientEmail').value || "Contact Support",
-            status: document.getElementById('shipmentStatus').value,
-            history: document.getElementById('routeHistory').value
+            onHold: isHold,
+            holdReason: document.getElementById('holdReason').value || "In Diplomatic Review",
+            history: document.getElementById('routeHistory').value,
+            startTime: new Date().toISOString()
         };
 
-        localStorage.setItem(id, JSON.stringify(manifest));
-        alert("Shipment " + id + " has been successfully created/updated!");
+        // Save to LocalStorage
+        let allShipments = JSON.parse(localStorage.getItem('shipments')) || {};
+        allShipments[id] = manifest;
+        localStorage.setItem('shipments', JSON.stringify(allShipments));
+        
+        alert("Shipment " + id + " Updated!");
     }
 </script>
-
 </body>
 </html>
