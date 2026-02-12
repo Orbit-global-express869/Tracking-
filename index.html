@@ -70,6 +70,9 @@
         animation: pulse-expand 2s infinite ease-in-out; 
     }
 
+    /* --- STATUS ALERT --- */
+    .status-alert { background: var(--warning); border: 1px solid #ffeeba; color: var(--warning-text); padding: 15px; border-radius: 10px; margin-bottom: 25px; text-align: center; font-weight: bold; }
+
     /* --- INFO BOX --- */
     .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #fdfdfd; padding: 25px; border: 1px solid var(--border); border-radius: 15px; margin-top: 20px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
     .info-item { border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; }
@@ -86,7 +89,7 @@
     .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 40px; padding-top: 20px; text-align: center; font-size: 0.85rem; opacity: 0.7; }
 
     .hidden { display: none; }
-    input, textarea { padding: 14px; border: 2px solid var(--border); border-radius: 10px; width: 100%; margin-bottom: 10px; }
+    input { padding: 14px; border: 2px solid var(--border); border-radius: 10px; width: 100%; margin-bottom: 10px; }
   </style>
 
   <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
@@ -118,6 +121,8 @@
       </form>
 
       <div id="track-result" class="hidden" style="margin-top:30px;">
+        <div id="holdAlert" class="status-alert hidden"></div>
+
         <div class="un-seal">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Flag_of_the_United_Nations.svg/1200px-Flag_of_the_United_Nations.svg.png" alt="UN Emblem">
             <p>UN Diplomatic Service</p>
@@ -175,12 +180,27 @@
       const num = document.getElementById('track-number').value.trim().toUpperCase();
       const res = document.getElementById('track-result');
       const noData = document.getElementById('no-data');
+      const alertDiv = document.getElementById('holdAlert');
+      const fill = document.getElementById('main-progress');
 
       if (shipments[num]) {
         const s = shipments[num];
         const elapsed = (Date.now() - new Date(s.startTime).getTime()) / 3600000;
-        noData.classList.add('hidden'); res.classList.remove('hidden');
+        noData.classList.add('hidden'); 
+        res.classList.remove('hidden');
         
+        // NEW HOLD LOGIC
+        if (s.onHold) {
+          alertDiv.innerHTML = "⚠️ STATUS: PENDING<br>" + (s.holdReason || "Shipment is currently on hold. Please contact support.");
+          alertDiv.classList.remove('hidden');
+          fill.style.width = "45%"; 
+          fill.style.background = "#d9534f"; // Red color for hold
+        } else {
+          alertDiv.classList.add('hidden');
+          fill.style.width = Math.min(100, (elapsed/s.totalTransitHours)*100) + '%';
+          fill.style.background = "var(--success)"; // Back to normal green
+        }
+
         let currentIdx = 0;
         for (let i = 0; i < s.milestones.length; i++) if (elapsed >= s.milestones[i].cumulativeHours) currentIdx = i;
 
@@ -189,8 +209,7 @@
         document.getElementById('display-phone').textContent = s.phone;
         document.getElementById('display-email').textContent = s.email;
         document.getElementById('display-address').textContent = s.address;
-        document.getElementById('main-progress').style.width = Math.min(100, (elapsed/s.totalTransitHours)*100) + '%';
-        document.getElementById('current-status-text').textContent = elapsed >= s.totalTransitHours ? "DELIVERED" : "DIPLOMATIC TRANSIT";
+        document.getElementById('current-status-text').textContent = s.onHold ? "PENDING" : (elapsed >= s.totalTransitHours ? "DELIVERED" : "DIPLOMATIC TRANSIT");
         document.getElementById('current-loc').textContent = s.milestones[currentIdx].location;
         document.getElementById('eta-display').textContent = elapsed >= s.totalTransitHours ? "Delivered" : new Date(Date.now() + (s.totalTransitHours - elapsed)*3600000).toLocaleString();
 
