@@ -9,7 +9,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
   <style>
-    /* --- YOUR ORIGINAL THEME & STYLES --- */
+    /* --- ALL YOUR EXACT STYLES RESTORED --- */
     :root {
       --primary: #004aad;
       --accent: #ffd700;
@@ -69,7 +69,6 @@
         animation: pulse-expand 2s infinite ease-in-out; 
     }
 
-    /* STATUS ALERT BOX */
     .status-alert { background: var(--warning); border: 1px solid #ffeeba; color: var(--warning-text); padding: 15px; border-radius: 10px; margin-bottom: 25px; text-align: center; font-weight: bold; }
 
     .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #fdfdfd; padding: 25px; border: 1px solid var(--border); border-radius: 15px; margin-top: 20px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
@@ -86,8 +85,9 @@
     .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 40px; padding-top: 20px; text-align: center; font-size: 0.85rem; opacity: 0.7; }
 
     .hidden { display: none; }
-    input, textarea, select { padding: 14px; border: 2px solid var(--border); border-radius: 10px; width: 100%; margin-bottom: 10px; }
+    input, textarea, select { padding: 14px; border: 2px solid var(--border); border-radius: 10px; width: 100%; margin-bottom: 10px; font-size: 1rem; }
     .admin-card { background: #f9f9f9; padding: 20px; border-radius: 12px; margin-bottom: 12px; border-left: 5px solid var(--primary); display: flex; align-items: center; justify-content: space-between;}
+    .edit-btn { background: #004aad; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 0.85rem; }
     .delete-btn { background: transparent; color: red; border: 1px solid red; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 0.85rem; }
   </style>
 
@@ -122,20 +122,16 @@
 
       <div id="track-result" class="hidden" style="margin-top:30px;">
         <div id="hold-alert" class="status-alert hidden"></div>
-
         <div class="un-seal">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Flag_of_the_United_Nations.svg/1200px-Flag_of_the_United_Nations.svg.png" alt="UN Emblem">
             <p>UN Diplomatic Service</p>
         </div>
-
         <div style="text-align:center; margin-bottom:30px;">
             <h3 id="shipment-title" style="color:var(--primary);"></h3>
             <p id="route-summary" style="font-weight:bold;"></p>
         </div>
-        
         <div class="progress-bar-container"><div class="progress-fill" id="main-progress"></div></div>
         <div class="tracker-box" id="vertical-tracker"></div>
-
         <div class="info-grid">
             <div class="info-item"><label>Shipment Status</label><span id="current-status-text"></span></div>
             <div class="info-item"><label>Current Facility</label><span id="current-loc"></span></div>
@@ -161,18 +157,16 @@
             <input type="email" id="add-email" placeholder="Customer Email" required>
             <input type="tel" id="add-phone" placeholder="Customer Phone" required>
         </div>
-        
         <div style="background:#f0f4f8; padding:15px; border-radius:10px; margin-bottom:15px;">
             <label style="font-size:0.85rem; font-weight:bold;">Shipment Status</label>
             <select id="add-hold">
                 <option value="false">Active (Normal Transit)</option>
                 <option value="true">On Hold (Pending Action)</option>
             </select>
-            <input type="text" id="add-hold-reason" placeholder="Hold Reason (e.g. Pending Security Clearance)">
+            <input type="text" id="add-hold-reason" placeholder="Reason for Hold (Visible to customer)">
         </div>
-
-        <textarea id="add-route" placeholder="Format: Location - Hours - Icon" rows="6" required></textarea>
-        <button type="submit" id="create-btn" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:bold;">Save to Cloud</button>
+        <textarea id="add-route" placeholder="Format: Location - Hours - Icon (e.g. London - 24 - 📦)" rows="6" required></textarea>
+        <button type="submit" id="create-btn" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:bold;">Create Manifest</button>
       </form>
       <div id="shipment-list" style="margin-top:20px;"></div>
     </section>
@@ -202,7 +196,7 @@
   </footer>
 
   <script>
-    // --- FIREBASE CONFIG COPIED FROM YOUR PHOTOS ---
+    // --- DATABASE CONFIG ---
     const firebaseConfig = {
       apiKey: "AIzaSyAreX9tA9P0t8qHdbD9P0t8qHdbD9",
       authDomain: "orbit-global-b4699.firebaseapp.com",
@@ -216,29 +210,46 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+    // --- RENDER LIST FROM CLOUD ---
     function renderAdminList() {
-      const list = document.getElementById('shipment-list');
-      db.ref('shipments').on('value', (snapshot) => {
-        const data = snapshot.val();
+      db.ref('shipments').on('value', (snap) => {
+        const data = snap.val() || {};
+        const list = document.getElementById('shipment-list');
         list.innerHTML = '<h3>Active Database</h3>';
-        if(data) {
-          Object.keys(data).forEach(num => {
-            const div = document.createElement('div');
-            div.className = 'admin-card';
-            div.innerHTML = `<strong>${num}</strong><div><button class="delete-btn" onclick="deleteShipment('${num}')">Delete</button></div>`;
-            list.appendChild(div);
-          });
-        }
+        Object.keys(data).forEach(num => {
+          const div = document.createElement('div');
+          div.className = 'admin-card';
+          div.innerHTML = `<strong>${num}</strong><div><button class="edit-btn" onclick="editShipment('${num}')">Edit</button><button class="delete-btn" onclick="deleteShipment('${num}')">Delete</button></div>`;
+          list.appendChild(div);
+        });
       });
     }
 
-    function deleteShipment(num) { if(confirm('Delete?')) { db.ref('shipments/' + num).remove(); } }
+    // --- EDIT FROM CLOUD ---
+    window.editShipment = function(num) {
+      db.ref('shipments/' + num).once('value', (snap) => {
+        const s = snap.val();
+        document.getElementById('add-number').value = num;
+        document.getElementById('add-origin').value = s.origin;
+        document.getElementById('add-destination').value = s.destination;
+        document.getElementById('add-address').value = s.address;
+        document.getElementById('add-email').value = s.email;
+        document.getElementById('add-phone').value = s.phone;
+        document.getElementById('add-hold').value = s.onHold ? "true" : "false";
+        document.getElementById('add-hold-reason').value = s.holdReason || "";
+        document.getElementById('add-route').value = s.milestones.map(m => `${m.location} - ${m.hoursToNext} - ${m.icon}`).join('\n');
+        document.getElementById('create-btn').textContent = "Update Manifest";
+        window.scrollTo(0, document.getElementById('admin').offsetTop);
+      });
+    };
 
+    window.deleteShipment = function(num) { if(confirm('Delete?')) db.ref('shipments/' + num).remove(); };
+
+    // --- SAVE TO CLOUD ---
     document.getElementById('add-form').addEventListener('submit', e => {
       e.preventDefault();
       const num = document.getElementById('add-number').value.trim().toUpperCase();
-      const routeText = document.getElementById('add-route').value;
-      const lines = routeText.trim().split('\n').filter(l => l.includes('-'));
+      const lines = document.getElementById('add-route').value.trim().split('\n').filter(l => l.includes('-'));
       let total = 0;
       const milestones = lines.map(line => {
         const parts = line.split('-').map(p => p.trim());
@@ -257,26 +268,28 @@
         holdReason: document.getElementById('add-hold-reason').value,
         milestones, totalTransitHours: total,
         startTime: new Date().toISOString()
+      }).then(() => {
+        alert("Saved to Cloud Successfully!"); 
+        e.target.reset();
+        document.getElementById('create-btn').textContent = "Create Manifest";
       });
-      alert("Shipment Saved Globally."); e.target.reset();
     });
 
+    // --- TRACK FROM CLOUD ---
     document.getElementById('track-form').addEventListener('submit', e => {
       e.preventDefault();
       const num = document.getElementById('track-number').value.trim().toUpperCase();
-      db.ref('shipments/' + num).once('value', (snapshot) => {
-        const s = snapshot.val();
-        const res = document.getElementById('track-result');
-        const noData = document.getElementById('no-data');
-
+      db.ref('shipments/' + num).once('value', snap => {
+        const s = snap.val();
         if (s) {
           const elapsed = (Date.now() - new Date(s.startTime).getTime()) / 3600000;
-          noData.classList.add('hidden'); res.classList.remove('hidden');
+          document.getElementById('no-data').classList.add('hidden'); 
+          document.getElementById('track-result').classList.remove('hidden');
           
           const alertBox = document.getElementById('hold-alert');
           const fill = document.getElementById('main-progress');
           if(s.onHold) {
-              alertBox.innerHTML = `⚠️ <b>PENDING:</b> ${s.holdReason || 'Action Required'}`;
+              alertBox.innerHTML = `⚠️ <b>SHIPMENT PENDING:</b> ${s.holdReason || 'Contact support.'}`;
               alertBox.classList.remove('hidden');
               fill.style.background = "#d9534f";
           } else {
@@ -292,22 +305,29 @@
           document.getElementById('display-phone').textContent = s.phone;
           document.getElementById('display-email').textContent = s.email;
           document.getElementById('display-address').textContent = s.address;
-          fill.style.width = s.onHold ? "45%" : Math.min(100, (elapsed/s.totalTransitHours)*100) + '%';
-          document.getElementById('current-status-text').textContent = s.onHold ? "ON HOLD" : (elapsed >= s.totalTransitHours ? "DELIVERED" : "DIPLOMATIC TRANSIT");
+          
+          const progressPercent = s.onHold ? 45 : Math.min(100, (elapsed/s.totalTransitHours)*100);
+          fill.style.width = progressPercent + '%';
+
+          document.getElementById('current-status-text').textContent = s.onHold ? "PENDING" : (elapsed >= s.totalTransitHours ? "DELIVERED" : "DIPLOMATIC TRANSIT");
           document.getElementById('current-loc').textContent = s.milestones[currentIdx].location;
+          document.getElementById('eta-display').textContent = elapsed >= s.totalTransitHours ? "Delivered" : new Date(Date.now() + (s.totalTransitHours - elapsed)*3600000).toLocaleString();
 
           const tracker = document.getElementById('vertical-tracker');
           tracker.innerHTML = '';
           s.milestones.forEach((m, i) => {
             const step = document.createElement('div');
-            const isCompleted = elapsed >= (m.cumulativeHours + m.hoursToNext);
+            const isCompleted = elapsed >= (m.cumulativeHours + m.hoursToNext) || (elapsed >= s.totalTransitHours && i === s.milestones.length - 1);
             const isCurrent = (i === currentIdx && !isCompleted);
             step.className = 'step ' + (isCompleted ? 'completed' : (isCurrent ? 'current' : 'pending'));
-            step.innerHTML = `<div class="circle">${isCompleted ? '✓' : m.icon}</div>
-                              <div class="content"><p>${m.location}</p></div>`;
+            step.innerHTML = `<div class=\"circle\">${isCompleted ? '✓' : m.icon}</div>
+                              <div class=\"content\"><p>${m.location}</p></div>`;
             tracker.appendChild(step);
           });
-        } else { res.classList.add('hidden'); noData.classList.remove('hidden'); }
+        } else { 
+            document.getElementById('track-result').classList.add('hidden'); 
+            document.getElementById('no-data').classList.remove('hidden'); 
+        }
       });
     });
 
