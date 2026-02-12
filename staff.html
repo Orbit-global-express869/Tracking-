@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Orbit Global Express - Staff Portal</title>
+  <title>Orbit Global Express - Global Delivery Solutions</title>
   
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
   <style>
+    /* --- ALL YOUR EXACT STYLES RESTORED --- */
     :root {
       --primary: #004aad;
       --accent: #ffd700;
@@ -25,33 +26,131 @@
 
     nav { background: var(--primary); padding: 1rem; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
     nav ul { list-style: none; display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; align-items: center; }
-    nav a { color: white; text-decoration: none; font-weight: 600; font-size: 1rem; }
+    nav a { color: white; text-decoration: none; font-weight: 600; font-size: 1rem; transition: 0.3s; }
+    nav a:hover { color: var(--accent); }
+
+    header {
+      background: linear-gradient(rgba(0, 74, 173, 0.7), rgba(0, 74, 173, 0.7)),
+                  url('https://images.unsplash.com/photo-1567808291548-fc3ee04dbcf0?auto=format&fit=crop&q=80&w=2070') center/cover no-repeat;
+      color: white; text-align: center; padding: 120px 20px 80px; background-attachment: fixed;
+    }
+    header h1 { font-size: 3.5rem; margin-bottom: 0.5rem; text-shadow: 2px 2px 8px rgba(0,0,0,0.5); }
+    header p { font-size: 1.2rem; font-weight: 300; max-width: 700px; margin: 0 auto; opacity: 0.9; }
 
     .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
     section { margin-bottom: 50px; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
     h2 { color: var(--primary); text-align: center; margin-bottom: 30px; font-size: 2.2rem; }
+
+    .un-seal { text-align: center; margin-bottom: 20px; }
+    .un-seal img { width: 100px; height: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+    .un-seal p { font-size: 0.7rem; color: var(--primary); font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-top: 5px; }
+
+    @keyframes pulse-expand {
+      0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(0, 74, 173, 0.7); }
+      70% { transform: scale(1.1); box-shadow: 0 0 0 15px rgba(0, 74, 173, 0); }
+      100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(0, 74, 173, 0); }
+    }
+
+    .progress-bar-container { height: 8px; background: #eee; border-radius: 4px; margin-bottom: 40px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--success); width: 0%; transition: width 1s ease-in-out; }
     
-    input, textarea, select { padding: 14px; border: 2px solid var(--border); border-radius: 10px; width: 100%; margin-bottom: 10px; font-family: inherit; font-size: 1rem; }
+    .step { display: flex; align-items: flex-start; position: relative; padding-bottom: 40px; }
+    .step::after { content: ""; position: absolute; left: 22px; top: 45px; bottom: 0; width: 4px; background: var(--border); z-index: 1; }
+    .step.completed::after { background: var(--success); }
+    .step:last-child::after { display: none; }
     
+    .circle { width: 48px; height: 48px; border-radius: 50%; background: white; border: 3px solid var(--border); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; margin-right: 20px; z-index: 2; position: relative; }
+    .step.completed .circle { background: var(--success); border-color: var(--success); color: white; }
+    
+    .step.current .circle { 
+        background: var(--primary); 
+        border-color: var(--primary); 
+        color: white; 
+        animation: pulse-expand 2s infinite ease-in-out; 
+    }
+
+    .status-alert { background: var(--warning); border: 1px solid #ffeeba; color: var(--warning-text); padding: 15px; border-radius: 10px; margin-bottom: 25px; text-align: center; font-weight: bold; }
+
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #fdfdfd; padding: 25px; border: 1px solid var(--border); border-radius: 15px; margin-top: 20px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+    .info-item { border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; }
+    .info-item label { display: block; font-size: 0.75rem; color: #888; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; margin-bottom: 5px; }
+    .info-item span { font-weight: 600; color: var(--text-dark); font-size: 1rem; display: block; }
+    .full-width { grid-column: span 2; }
+
+    footer { background: var(--primary); color: white; padding: 4rem 2rem 2rem; margin-top: 50px; }
+    .footer-content { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; }
+    .footer-section h3 { color: var(--accent); font-size: 1.2rem; margin-bottom: 20px; text-transform: uppercase; }
+    .footer-section p { font-size: 0.95rem; color: white; opacity: 0.9; display: block; margin-bottom: 10px; }
+    .whatsapp-badge { display: inline-block; background: #25D366; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; margin-bottom: 8px; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 40px; padding-top: 20px; text-align: center; font-size: 0.85rem; opacity: 0.7; }
+
+    .hidden { display: none; }
+    input, textarea, select { padding: 14px; border: 2px solid var(--border); border-radius: 10px; width: 100%; margin-bottom: 10px; font-size: 1rem; }
     .admin-card { background: #f9f9f9; padding: 20px; border-radius: 12px; margin-bottom: 12px; border-left: 5px solid var(--primary); display: flex; align-items: center; justify-content: space-between;}
     .edit-btn { background: #004aad; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 0.85rem; }
     .delete-btn { background: transparent; color: red; border: 1px solid red; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 0.85rem; }
     
+    /* NEW OVERRIDE UI STYLE */
     .override-box { background: #eef2f7; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px dashed var(--primary); }
-    .help-text { font-size: 0.8rem; color: #666; margin-bottom: 10px; background: #fff; padding: 10px; border-radius: 5px; border: 1px solid #ddd; }
   </style>
+
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script type="text/javascript">
+    function googleTranslateElementInit() { new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element'); }
+  </script>
 </head>
 <body>
 
   <nav>
-    <ul><li><a href="#">Orbit Staff Portal</a></li></ul>
+    <ul>
+      <li><a href="#home">Home</a></li>
+      <li><a href="#track">Track Shipment</a></li>
+      <li><a href="#" id="admin-link">Staff Portal</a></li>
+      <li id="google_translate_element"></li>
+    </ul>
   </nav>
 
+  <header id="home">
+    <h1>Orbit Global Express</h1>
+    <p>Secure Worldwide Logistics & Diplomatic Courier Services. UN Diplomatic Service Partner.</p>
+  </header>
+
   <div class="container">
-    <section id="admin">
+    <section id="track">
+      <h2>Track Diplomatic Cargo</h2>
+      <form id="track-form">
+        <input type="text" id="track-number" placeholder="Enter Tracking Number" required>
+        <button type="submit" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">Locate Shipment</button>
+      </form>
+
+      <div id="track-result" class="hidden" style="margin-top:30px;">
+        <div id="hold-alert" class="status-alert hidden"></div>
+        <div class="un-seal">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Flag_of_the_United_Nations.svg/1200px-Flag_of_the_United_Nations.svg.png" alt="UN Emblem">
+            <p>UN Diplomatic Service</p>
+        </div>
+        <div style="text-align:center; margin-bottom:30px;">
+            <h3 id="shipment-title" style="color:var(--primary);"></h3>
+            <p id="route-summary" style="font-weight:bold;"></p>
+        </div>
+        <div class="progress-bar-container"><div class="progress-fill" id="main-progress"></div></div>
+        <div class="tracker-box" id="vertical-tracker"></div>
+        <div class="info-grid">
+            <div class="info-item"><label>Shipment Status</label><span id="current-status-text"></span></div>
+            <div class="info-item"><label>Current Facility</label><span id="current-loc"></span></div>
+            <div class="info-item"><label>Recipient Phone</label><span id="display-phone"></span></div>
+            <div class="info-item"><label>Recipient Email</label><span id="display-email"></span></div>
+            <div class="info-item full-width"><label>Delivery Address</label><span id="display-address"></span></div>
+            <div class="info-item full-width"><label>Estimated Arrival</label><span id="eta-display"></span></div>
+        </div>
+      </div>
+      <p id="no-data" class="hidden" style="text-align:center; color:red; margin-top:20px;">Shipment ID not found.</p>
+    </section>
+
+    <section id="admin" class="hidden">
       <h2>Staff Manifest Portal</h2>
       <form id="add-form">
-        <input type="text" id="add-number" placeholder="Tracking ID (e.g. OGE-7744)" required>
+        <input type="text" id="add-number" placeholder="Tracking ID" required>
         <div style="display:flex; gap:10px;">
             <input type="text" id="add-origin" placeholder="Origin" required>
             <input type="text" id="add-destination" placeholder="Destination" required>
@@ -61,12 +160,11 @@
             <input type="email" id="add-email" placeholder="Customer Email" required>
             <input type="tel" id="add-phone" placeholder="Customer Phone" required>
         </div>
-        
-        <div style="background:#fff3cd; padding:15px; border-radius:10px; margin-bottom:15px; border: 1px solid #ffeeba;">
-            <label style="font-size:0.85rem; font-weight:bold;">Security Hold Status</label>
+        <div style="background:#f0f4f8; padding:15px; border-radius:10px; margin-bottom:15px;">
+            <label style="font-size:0.85rem; font-weight:bold;">Shipment Status</label>
             <select id="add-hold">
-                <option value="false">Active (Moving Normally)</option>
-                <option value="true">On Hold (Block Transit)</option>
+                <option value="false">Active (Normal Transit)</option>
+                <option value="true">On Hold (Pending Action)</option>
             </select>
             <input type="text" id="add-hold-reason" placeholder="Reason for Hold (Visible to customer)">
         </div>
@@ -78,26 +176,40 @@
                 <option value="true">On (Force to specific step)</option>
             </select>
             <input type="number" id="add-override-step" placeholder="Force to Step # (e.g. 1, 2, 3...)" min="1">
-            <small style="display:block; margin-top:5px; color:#666;">If On, the system ignores time and pushes the package to this step number.</small>
         </div>
 
-        <label style="font-weight: bold; color: var(--primary);">Route Manifest</label>
-        <div class="help-text">
-            <strong>Time Format:</strong> Use <code>Hours:Minutes</code><br>
-            Example: <code>London - 1:30 - 📦</code> (for 1 hour 30 mins)
-        </div>
-        <textarea id="add-route" placeholder="Location - HH:MM - Icon" rows="6" required></textarea>
-        
-        <button type="submit" id="create-btn" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">Save Manifest to Cloud</button>
+        <textarea id="add-route" placeholder="Format: Location - HH:MM - Icon (e.g. London - 1:30 - 📦)" rows="6" required></textarea>
+        <button type="submit" id="create-btn" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:bold;">Create Manifest</button>
       </form>
-      
-      <div id="shipment-list" style="margin-top:30px;">
-          <h3>Active Database</h3>
-      </div>
+      <div id="shipment-list" style="margin-top:20px;"></div>
     </section>
   </div>
 
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Corporate HQ</h3>
+        <p>124-126 Borough High St<br>London SE1 1LB, UK</p>
+      </div>
+      <div class="footer-section">
+        <h3>Support</h3>
+        <p>orbitglobal869@gmail.com</p>
+        <div class="whatsapp-badge">WhatsApp Only</div>
+        <p>+44 745 128 4269</p>
+      </div>
+      <div class="footer-section">
+        <h3>Service Hours</h3>
+        <p>Mon - Fri: 08:00 - 18:00<br>Sat: 09:00 - 14:00<br>24/7 Global Monitoring</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>Orbit Global Express | UN Diplomatic Service Partner</p>
+      <p>© 2026 Orbit Global Express. All Rights Reserved.</p>
+    </div>
+  </footer>
+
   <script>
+    // --- DATABASE CONFIG ---
     const firebaseConfig = {
       apiKey: "AIzaSyAreX9tA9P0t8qHdbD9P0t8qHdbD9",
       authDomain: "orbit-global-b4699.firebaseapp.com",
@@ -111,14 +223,14 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+    // Helper to parse HH:MM to decimal hours
     function parseTimeToHours(timeStr) {
         if (!timeStr.toString().includes(':')) return parseFloat(timeStr) || 0;
         const parts = timeStr.split(':');
-        const h = parseFloat(parts[0]) || 0;
-        const m = parseFloat(parts[1]) || 0;
-        return h + (m / 60);
+        return (parseFloat(parts[0]) || 0) + ((parseFloat(parts[1]) || 0) / 60);
     }
 
+    // --- RENDER LIST FROM CLOUD ---
     function renderAdminList() {
       db.ref('shipments').on('value', (snap) => {
         const data = snap.val() || {};
@@ -127,47 +239,48 @@
         Object.keys(data).forEach(num => {
           const div = document.createElement('div');
           div.className = 'admin-card';
-          div.innerHTML = `<strong>${num}</strong> <div><button class="edit-btn" onclick="editShipment('${num}')">Edit</button><button class="delete-btn" onclick="deleteShipment('${num}')">Delete</button></div>`;
+          div.innerHTML = `<strong>${num}</strong><div><button class="edit-btn" onclick="editShipment('${num}')">Edit</button><button class="delete-btn" onclick="deleteShipment('${num}')">Delete</button></div>`;
           list.appendChild(div);
         });
       });
     }
 
+    // --- EDIT FROM CLOUD ---
     window.editShipment = function(num) {
-        db.ref('shipments/' + num).once('value', (snap) => {
-            const s = snap.val();
-            document.getElementById('add-number').value = num;
-            document.getElementById('add-origin').value = s.origin;
-            document.getElementById('add-destination').value = s.destination;
-            document.getElementById('add-address').value = s.address;
-            document.getElementById('add-email').value = s.email;
-            document.getElementById('add-phone').value = s.phone;
-            document.getElementById('add-hold').value = s.onHold ? "true" : "false";
-            document.getElementById('add-hold-reason').value = s.holdReason || "";
-            document.getElementById('add-override-active').value = s.manualOverride ? "true" : "false";
-            document.getElementById('add-override-step').value = s.forcedStep || "";
+      db.ref('shipments/' + num).once('value', (snap) => {
+        const s = snap.val();
+        document.getElementById('add-number').value = num;
+        document.getElementById('add-origin').value = s.origin;
+        document.getElementById('add-destination').value = s.destination;
+        document.getElementById('add-address').value = s.address;
+        document.getElementById('add-email').value = s.email;
+        document.getElementById('add-phone').value = s.phone;
+        document.getElementById('add-hold').value = s.onHold ? "true" : "false";
+        document.getElementById('add-hold-reason').value = s.holdReason || "";
+        
+        // Load Override Settings
+        document.getElementById('add-override-active').value = s.manualOverride ? "true" : "false";
+        document.getElementById('add-override-step').value = s.forcedStep || "";
 
-            const routeString = s.milestones.map(m => {
-                const hours = Math.floor(m.hoursToNext);
-                const mins = Math.round((m.hoursToNext - hours) * 60);
-                const timeLabel = mins > 0 ? `${hours}:${mins.toString().padStart(2, '0')}` : hours;
-                return `${m.location} - ${timeLabel} - ${m.icon}`;
-            }).join('\n');
-            
-            document.getElementById('add-route').value = routeString;
-            document.getElementById('create-btn').textContent = "Update Manifest";
-            window.scrollTo(0,0);
-        });
-    }
+        document.getElementById('add-route').value = s.milestones.map(m => {
+            const h = Math.floor(m.hoursToNext);
+            const min = Math.round((m.hoursToNext - h) * 60);
+            const timeStr = min > 0 ? `${h}:${min.toString().padStart(2, '0')}` : h;
+            return `${m.location} - ${timeStr} - ${m.icon}`;
+        }).join('\n');
+        
+        document.getElementById('create-btn').textContent = "Update Manifest";
+        window.scrollTo(0, document.getElementById('admin').offsetTop);
+      });
+    };
 
-    window.deleteShipment = function(num) { if(confirm('Delete permanently?')) db.ref('shipments/' + num).remove(); }
+    window.deleteShipment = function(num) { if(confirm('Delete?')) db.ref('shipments/' + num).remove(); };
 
+    // --- SAVE TO CLOUD ---
     document.getElementById('add-form').addEventListener('submit', e => {
       e.preventDefault();
       const num = document.getElementById('add-number').value.trim().toUpperCase();
-      const routeText = document.getElementById('add-route').value;
-      const lines = routeText.trim().split('\n').filter(l => l.includes('-'));
-      
+      const lines = document.getElementById('add-route').value.trim().split('\n').filter(l => l.includes('-'));
       let total = 0;
       const milestones = lines.map(line => {
         const parts = line.split('-').map(p => p.trim());
@@ -178,26 +291,94 @@
       });
 
       db.ref('shipments/' + num + '/startTime').once('value', (snap) => {
-          const startTime = snap.val() || new Date().toISOString();
-          db.ref('shipments/' + num).set({
-            origin: document.getElementById('add-origin').value,
-            destination: document.getElementById('add-destination').value,
-            address: document.getElementById('add-address').value,
-            email: document.getElementById('add-email').value,
-            phone: document.getElementById('add-phone').value,
-            onHold: document.getElementById('add-hold').value === "true",
-            holdReason: document.getElementById('add-hold-reason').value,
-            manualOverride: document.getElementById('add-override-active').value === "true",
-            forcedStep: parseInt(document.getElementById('add-override-step').value) || 0,
-            milestones, totalTransitHours: total, startTime: startTime
-          }).then(() => {
-            alert("Saved Successfully");
-            e.target.reset();
-            document.getElementById('create-btn').textContent = "Save Manifest to Cloud";
-          });
+        const existingStart = snap.val() || new Date().toISOString();
+        db.ref('shipments/' + num).set({
+          origin: document.getElementById('add-origin').value,
+          destination: document.getElementById('add-destination').value,
+          address: document.getElementById('add-address').value,
+          email: document.getElementById('add-email').value,
+          phone: document.getElementById('add-phone').value,
+          onHold: document.getElementById('add-hold').value === "true",
+          holdReason: document.getElementById('add-hold-reason').value,
+          manualOverride: document.getElementById('add-override-active').value === "true",
+          forcedStep: parseInt(document.getElementById('add-override-step').value) || 0,
+          milestones, totalTransitHours: total,
+          startTime: existingStart
+        }).then(() => {
+          alert("Saved to Cloud Successfully!"); 
+          e.target.reset();
+          document.getElementById('create-btn').textContent = "Create Manifest";
+        });
       });
     });
 
+    // --- TRACK FROM CLOUD ---
+    document.getElementById('track-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const num = document.getElementById('track-number').value.trim().toUpperCase();
+      db.ref('shipments/' + num).once('value', snap => {
+        const s = snap.val();
+        if (s) {
+          const now = Date.now();
+          const elapsed = (now - new Date(s.startTime).getTime()) / 3600000;
+          document.getElementById('no-data').classList.add('hidden'); 
+          document.getElementById('track-result').classList.remove('hidden');
+          
+          const alertBox = document.getElementById('hold-alert');
+          const fill = document.getElementById('main-progress');
+          if(s.onHold) {
+              alertBox.innerHTML = `⚠️ <b>SHIPMENT PENDING:</b> ${s.holdReason || 'Contact support.'}`;
+              alertBox.classList.remove('hidden');
+              fill.style.background = "#d9534f";
+          } else {
+              alertBox.classList.add('hidden');
+              fill.style.background = "var(--success)";
+          }
+
+          // CALCULATE STAGE (TIMER OR OVERRIDE)
+          let currentIdx = 0;
+          if(s.manualOverride && s.forcedStep > 0) {
+              currentIdx = Math.min(s.forcedStep - 1, s.milestones.length - 1);
+          } else {
+              for (let i = 0; i < s.milestones.length; i++) if (elapsed >= s.milestones[i].cumulativeHours) currentIdx = i;
+          }
+
+          document.getElementById('shipment-title').textContent = "Tracking: " + num;
+          document.getElementById('route-summary').textContent = s.origin + " ➔ " + s.destination;
+          document.getElementById('display-phone').textContent = s.phone;
+          document.getElementById('display-email').textContent = s.email;
+          document.getElementById('display-address').textContent = s.address;
+          
+          const progressPercent = s.onHold ? 45 : (s.manualOverride ? ((currentIdx+1)/s.milestones.length)*100 : Math.min(100, (elapsed/s.totalTransitHours)*100));
+          fill.style.width = progressPercent + '%';
+
+          const isDelivered = !s.manualOverride ? (elapsed >= s.totalTransitHours) : (currentIdx === s.milestones.length -1);
+          document.getElementById('current-status-text').textContent = s.onHold ? "PENDING" : (isDelivered ? "DELIVERED" : "DIPLOMATIC TRANSIT");
+          document.getElementById('current-loc').textContent = s.milestones[currentIdx].location;
+          
+          const etaTime = !s.manualOverride ? new Date(now + (s.totalTransitHours - elapsed)*3600000) : "Calculated upon arrival";
+          document.getElementById('eta-display').textContent = isDelivered ? "Delivered" : (s.manualOverride ? "In Progress" : etaTime.toLocaleString());
+
+          const tracker = document.getElementById('vertical-tracker');
+          tracker.innerHTML = '';
+          s.milestones.forEach((m, i) => {
+            const step = document.createElement('div');
+            const isCompleted = s.manualOverride ? (i < currentIdx) : (elapsed >= (m.cumulativeHours + m.hoursToNext));
+            const isCurrent = (i === currentIdx && (!isDelivered || s.manualOverride));
+            
+            step.className = 'step ' + (isCompleted || (isDelivered && i === s.milestones.length -1) ? 'completed' : (isCurrent ? 'current' : 'pending'));
+            step.innerHTML = `<div class=\"circle\">${(isCompleted || (isDelivered && i === s.milestones.length-1)) ? '✓' : m.icon}</div>
+                              <div class=\"content\"><p>${m.location}</p></div>`;
+            tracker.appendChild(step);
+          });
+        } else { 
+            document.getElementById('track-result').classList.add('hidden'); 
+            document.getElementById('no-data').classList.remove('hidden'); 
+        }
+      });
+    });
+
+    document.getElementById('admin-link').addEventListener('click', () => document.getElementById('admin').classList.toggle('hidden'));
     renderAdminList();
   </script>
 </body>
