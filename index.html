@@ -3,296 +3,62 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Orbit Global Express - Global Delivery Solutions</title>
+  <title>Orbit Global Express - Tracking</title>
   <style>
-    /* --- THEME VARIABLES --- */
-    :root {
-      --primary: #004aad;
-      --accent: #ffd700;
-      --success: #28a745;
-      --bg-light: #f4f7f9;
-      --text-dark: #2c3e50;
-      --border: #e0e6ed;
-      --warning: #fff3cd;
-      --warning-text: #856404;
-    }
-
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: var(--bg-light); color: var(--text-dark); line-height: 1.6; }
-
-    /* --- NAVIGATION --- */
-    nav { background: var(--primary); padding: 1rem; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-    nav ul { list-style: none; display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; align-items: center; }
-    nav a { color: white; text-decoration: none; font-weight: 600; font-size: 1rem; transition: 0.3s; }
-    nav a:hover { color: var(--accent); }
-
-    /* --- HEADER --- */
-    header {
-      background: linear-gradient(rgba(0, 74, 173, 0.7), rgba(0, 74, 173, 0.7)),
-                  url('https://images.unsplash.com/photo-1567808291548-fc3ee04dbcf0?auto=format&fit=crop&q=80&w=2070') center/cover no-repeat;
-      color: white; text-align: center; padding: 120px 20px 80px; background-attachment: fixed;
-    }
-    header h1 { font-size: 3.5rem; margin-bottom: 0.5rem; text-shadow: 2px 2px 8px rgba(0,0,0,0.5); }
-    header p { font-size: 1.2rem; font-weight: 300; max-width: 700px; margin: 0 auto; opacity: 0.9; }
-
-    .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
-    section { margin-bottom: 50px; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-    h2 { color: var(--primary); text-align: center; margin-bottom: 30px; font-size: 2.2rem; }
-
-    /* --- UN SEAL STYLE --- */
-    .un-seal { text-align: center; margin-bottom: 20px; }
-    .un-seal img { width: 100px; height: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
-    .un-seal p { font-size: 0.7rem; color: var(--primary); font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-top: 5px; }
-
-    /* --- PULSING ICON ANIMATION --- */
-    @keyframes pulse-expand {
-      0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(0, 74, 173, 0.7); }
-      70% { transform: scale(1.1); box-shadow: 0 0 0 15px rgba(0, 74, 173, 0); }
-      100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(0, 74, 173, 0); }
-    }
-
-    /* --- TRACKER UI --- */
-    .progress-bar-container { height: 8px; background: #eee; border-radius: 4px; margin-bottom: 40px; overflow: hidden; }
-    .progress-fill { height: 100%; background: var(--success); width: 0%; transition: width 1s ease-in-out; }
-    
-    .step { display: flex; align-items: flex-start; position: relative; padding-bottom: 40px; }
-    .step::after { content: ""; position: absolute; left: 22px; top: 45px; bottom: 0; width: 4px; background: var(--border); z-index: 1; }
-    .step.completed::after { background: var(--success); }
-    .step:last-child::after { display: none; }
-    
-    .circle { width: 48px; height: 48px; border-radius: 50%; background: white; border: 3px solid var(--border); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; margin-right: 20px; z-index: 2; position: relative; }
-    .step.completed .circle { background: var(--success); border-color: var(--success); color: white; }
-    
-    .step.current .circle { 
-        background: var(--primary); 
-        border-color: var(--primary); 
-        color: white; 
-        animation: pulse-expand 2s infinite ease-in-out; 
-    }
-
-    /* --- INFO BOX --- */
-    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #fdfdfd; padding: 25px; border: 1px solid var(--border); border-radius: 15px; margin-top: 20px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
-    .info-item { border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; }
-    .info-item label { display: block; font-size: 0.75rem; color: #888; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; margin-bottom: 5px; }
-    .info-item span { font-weight: 600; color: var(--text-dark); font-size: 1rem; display: block; }
-    .full-width { grid-column: span 2; }
-
-    /* --- FOOTER --- */
-    footer { background: var(--primary); color: white; padding: 4rem 2rem 2rem; margin-top: 50px; }
-    .footer-content { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; }
-    .footer-section h3 { color: var(--accent); font-size: 1.2rem; margin-bottom: 20px; text-transform: uppercase; }
-    .footer-section p { font-size: 0.95rem; color: white; opacity: 0.9; display: block; margin-bottom: 10px; }
-    .whatsapp-badge { display: inline-block; background: #25D366; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; margin-bottom: 8px; }
-    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 40px; padding-top: 20px; text-align: center; font-size: 0.85rem; opacity: 0.7; }
-
+    :root { --primary: #004aad; --bg-light: #f4f7f9; --text-dark: #2c3e50; }
+    body { font-family: 'Segoe UI', sans-serif; background: var(--bg-light); color: var(--text-dark); margin:0; }
+    nav { background: var(--primary); padding: 1rem; text-align: center; }
+    nav a { color: white; text-decoration: none; font-weight: bold; }
+    .container { max-width: 800px; margin: 40px auto; padding: 20px; background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    input { width: 100%; padding: 15px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; }
+    button { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .status-alert { background: #fff3cd; color: #856404; padding: 15px; border-radius: 10px; margin: 20px 0; border: 1px solid #ffeeba; font-weight: bold; text-align: center; }
     .hidden { display: none; }
-    input, textarea { padding: 14px; border: 2px solid var(--border); border-radius: 10px; width: 100%; margin-bottom: 10px; }
-    .admin-card { background: #f9f9f9; padding: 20px; border-radius: 12px; margin-bottom: 12px; border-left: 5px solid var(--primary); display: flex; align-items: center; justify-content: space-between;}
-    .edit-btn { background: #004aad; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 0.85rem; }
-    .delete-btn { background: transparent; color: red; border: 1px solid red; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 0.85rem; }
+    .progress-bar { height: 10px; background: #eee; border-radius: 5px; margin: 20px 0; overflow: hidden; }
+    .progress-fill { height: 100%; background: #28a745; width: 0%; transition: 1s; }
   </style>
-
-  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-  <script type="text/javascript">
-    function googleTranslateElementInit() { new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element'); }
-  </script>
 </head>
 <body>
-
-  <nav>
-    <ul>
-      <li><a href="#home">Home</a></li>
-      <li><a href="#track">Track Shipment</a></li>
-      <li><a href="#" id="admin-link">Staff Portal</a></li>
-      <li id="google_translate_element"></li>
-    </ul>
-  </nav>
-
-  <header id="home">
-    <h1>Orbit Global Express</h1>
-    <p>Secure Worldwide Logistics & Diplomatic Courier Services. UN Diplomatic Service Partner.</p>
-  </header>
-
+  <nav><a href="#">ORBIT GLOBAL EXPRESS</a></nav>
   <div class="container">
-    <section id="track">
-      <h2>Track Diplomatic Cargo</h2>
-      <form id="track-form">
-        <input type="text" id="track-number" placeholder="Enter Tracking Number" required>
-        <button type="submit" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">Locate Shipment</button>
-      </form>
+    <h2>Track Your Shipment</h2>
+    <input type="text" id="trackInput" placeholder="Enter Tracking ID">
+    <button onclick="track()">Locate Shipment</button>
 
-      <div id="track-result" class="hidden" style="margin-top:30px;">
-        <div class="un-seal">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Flag_of_the_United_Nations.svg/1200px-Flag_of_the_United_Nations.svg.png" alt="UN Emblem">
-            <p>UN Diplomatic Service</p>
-        </div>
-
-        <div style="text-align:center; margin-bottom:30px;">
-            <h3 id="shipment-title" style="color:var(--primary);"></h3>
-            <p id="route-summary" style="font-weight:bold;"></p>
-        </div>
-        
-        <div class="progress-bar-container"><div class="progress-fill" id="main-progress"></div></div>
-        <div class="tracker-box" id="vertical-tracker"></div>
-
-        <div class="info-grid">
-            <div class="info-item"><label>Shipment Status</label><span id="current-status-text"></span></div>
-            <div class="info-item"><label>Current Facility</label><span id="current-loc"></span></div>
-            <div class="info-item"><label>Recipient Phone</label><span id="display-phone"></span></div>
-            <div class="info-item"><label>Recipient Email</label><span id="display-email"></span></div>
-            <div class="info-item full-width"><label>Delivery Address</label><span id="display-address"></span></div>
-            <div class="info-item full-width"><label>Estimated Arrival</label><span id="eta-display"></span></div>
-        </div>
-      </div>
-      <p id="no-data" class="hidden" style="text-align:center; color:red; margin-top:20px;">Shipment ID not found.</p>
-    </section>
-
-    <section id="admin" class="hidden">
-      <h2>Staff Manifest Portal</h2>
-      <form id="add-form">
-        <input type="text" id="add-number" placeholder="Tracking ID" required>
-        <div style="display:flex; gap:10px;">
-            <input type="text" id="add-origin" placeholder="Origin" required>
-            <input type="text" id="add-destination" placeholder="Destination" required>
-        </div>
-        <input type="text" id="add-address" placeholder="Full Recipient Address" required>
-        <div style="display:flex; gap:10px;">
-            <input type="email" id="add-email" placeholder="Customer Email" required>
-            <input type="tel" id="add-phone" placeholder="Customer Phone" required>
-        </div>
-        <textarea id="add-route" placeholder="Format: Location - Hours - Icon (e.g. London - 24 - 📦)" rows="6" required></textarea>
-        <p style="font-size: 0.8rem; color: #666; margin-bottom: 10px;">*Tip: Use 🚚 for transit and 🏠 for the last destination line.</p>
-        <button type="submit" id="create-btn" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:bold;">Create Manifest</button>
-      </form>
-      <div id="shipment-list" style="margin-top:20px;"></div>
-    </section>
+    <div id="result" class="hidden">
+      <div id="holdAlert" class="status-alert hidden"></div>
+      <div class="progress-bar"><div id="fill" class="progress-fill"></div></div>
+      <div id="details"></div>
+    </div>
   </div>
 
-  <footer>
-    <div class="footer-content">
-      <div class="footer-section">
-        <h3>Corporate HQ</h3>
-        <p>124-126 Borough High St<br>London SE1 1LB, UK</p>
-      </div>
-      <div class="footer-section">
-        <h3>Support</h3>
-        <p>orbitglobal869@gmail.com</p>
-        <div class="whatsapp-badge">WhatsApp Only</div>
-        <p>+44 745 128 4269</p>
-      </div>
-      <div class="footer-section">
-        <h3>Service Hours</h3>
-        <p>Mon - Fri: 08:00 - 18:00<br>Sat: 09:00 - 14:00<br>24/7 Global Monitoring</p>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>Orbit Global Express | UN Diplomatic Service Partner</p>
-      <p>© 2026 Orbit Global Express. All Rights Reserved.</p>
-    </div>
-  </footer>
-
   <script>
-    let shipments = JSON.parse(localStorage.getItem('shipments')) || {};
+    function track() {
+      const id = document.getElementById('trackInput').value.trim().toUpperCase();
+      const shipments = JSON.parse(localStorage.getItem('shipments')) || {};
+      const resDiv = document.getElementById('result');
+      const alertDiv = document.getElementById('holdAlert');
 
-    function saveShipments() {
-      localStorage.setItem('shipments', JSON.stringify(shipments));
-      renderAdminList();
-    }
+      if (shipments[id]) {
+        const s = shipments[id];
+        resDiv.classList.remove('hidden');
 
-    function renderAdminList() {
-      const list = document.getElementById('shipment-list');
-      list.innerHTML = '<h3>Active Database</h3>';
-      Object.keys(shipments).forEach(num => {
-        const div = document.createElement('div');
-        div.className = 'admin-card';
-        div.innerHTML = `<strong>${num}</strong><div><button class="edit-btn" onclick="editShipment('${num}')">Edit</button><button class="delete-btn" onclick="deleteShipment('${num}')">Delete</button></div>`;
-        list.appendChild(div);
-      });
-    }
-
-    function editShipment(num) {
-        const s = shipments[num];
-        document.getElementById('add-number').value = num;
-        document.getElementById('add-origin').value = s.origin;
-        document.getElementById('add-destination').value = s.destination;
-        document.getElementById('add-address').value = s.address;
-        document.getElementById('add-email').value = s.email;
-        document.getElementById('add-phone').value = s.phone;
-        const routeString = s.milestones.map(m => `${m.location} - ${m.hoursToNext} - ${m.icon || '📦'}`).join('\n');
-        document.getElementById('add-route').value = routeString;
-        document.getElementById('create-btn').textContent = "Update Manifest";
-    }
-
-    function deleteShipment(num) { if(confirm('Delete?')) { delete shipments[num]; saveShipments(); } }
-
-    document.getElementById('add-form').addEventListener('submit', e => {
-      e.preventDefault();
-      const num = document.getElementById('add-number').value.trim().toUpperCase();
-      const routeText = document.getElementById('add-route').value;
-      const lines = routeText.trim().split('\n').filter(l => l.includes('-'));
-      let total = 0;
-      const milestones = lines.map(line => {
-        const parts = line.split('-').map(p => p.trim());
-        const m = { location: parts[0], hoursToNext: parseFloat(parts[1]) || 0, icon: parts[2] || '📦', cumulativeHours: total };
-        total += m.hoursToNext;
-        return m;
-      });
-
-      shipments[num] = {
-        origin: document.getElementById('add-origin').value,
-        destination: document.getElementById('add-destination').value,
-        address: document.getElementById('add-address').value,
-        email: document.getElementById('add-email').value,
-        phone: document.getElementById('add-phone').value,
-        milestones, totalTransitHours: total,
-        startTime: shipments[num] ? shipments[num].startTime : new Date().toISOString()
-      };
-      saveShipments();
-      alert("Shipment Saved."); 
-      e.target.reset();
-    });
-
-    document.getElementById('track-form').addEventListener('submit', e => {
-      e.preventDefault();
-      const num = document.getElementById('track-number').value.trim().toUpperCase();
-      const res = document.getElementById('track-result');
-      const noData = document.getElementById('no-data');
-
-      if (shipments[num]) {
-        const s = shipments[num];
-        const elapsed = (Date.now() - new Date(s.startTime).getTime()) / 3600000;
-        noData.classList.add('hidden'); res.classList.remove('hidden');
+        if (s.onHold) {
+          alertDiv.innerHTML = "⚠️ HOLD: " + s.holdReason;
+          alertDiv.classList.remove('hidden');
+          document.getElementById('fill').style.width = "40%"; // Freeze progress bar
+          document.getElementById('fill').style.background = "#d9534f"; // Turn red
+        } else {
+          alertDiv.classList.add('hidden');
+          document.getElementById('fill').style.width = "75%"; 
+          document.getElementById('fill').style.background = "#28a745";
+        }
         
-        let currentIdx = 0;
-        for (let i = 0; i < s.milestones.length; i++) if (elapsed >= s.milestones[i].cumulativeHours) currentIdx = i;
-
-        document.getElementById('shipment-title').textContent = "Tracking: " + num;
-        document.getElementById('route-summary').textContent = s.origin + " ➔ " + s.destination;
-        document.getElementById('display-phone').textContent = s.phone;
-        document.getElementById('display-email').textContent = s.email;
-        document.getElementById('display-address').textContent = s.address;
-        document.getElementById('main-progress').style.width = Math.min(100, (elapsed/s.totalTransitHours)*100) + '%';
-        document.getElementById('current-status-text').textContent = elapsed >= s.totalTransitHours ? "DELIVERED" : "DIPLOMATIC TRANSIT";
-        document.getElementById('current-loc').textContent = s.milestones[currentIdx].location;
-        document.getElementById('eta-display').textContent = elapsed >= s.totalTransitHours ? "Delivered" : new Date(Date.now() + (s.totalTransitHours - elapsed)*3600000).toLocaleString();
-
-        const tracker = document.getElementById('vertical-tracker');
-        tracker.innerHTML = '';
-        s.milestones.forEach((m, i) => {
-          const step = document.createElement('div');
-          const isCompleted = elapsed >= (m.cumulativeHours + m.hoursToNext) || (elapsed >= s.totalTransitHours && i === s.milestones.length - 1);
-          const isCurrent = (i === currentIdx && !isCompleted);
-          
-          step.className = 'step ' + (isCompleted ? 'completed' : (isCurrent ? 'current' : 'pending'));
-          step.innerHTML = `<div class="circle">${isCompleted ? '✓' : m.icon}</div>
-                            <div class="content"><p>${m.location}</p><small>${isCurrent ? 'Current Facility' : (i === s.milestones.length - 1 ? 'Final Destination' : 'Route point')}</small></div>`;
-          tracker.appendChild(step);
-        });
-      } else { res.classList.add('hidden'); noData.classList.remove('hidden'); }
-    });
-
-    document.getElementById('admin-link').addEventListener('click', () => document.getElementById('admin').classList.toggle('hidden'));
-    renderAdminList();
+        document.getElementById('details').innerHTML = `<h3>Recipient: ${s.name}</h3><p>${s.history}</p>`;
+      } else {
+        alert("No shipment found.");
+      }
+    }
   </script>
 </body>
 </html>
